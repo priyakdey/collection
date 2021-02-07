@@ -9,6 +9,17 @@ version = "1.0-SNAPSHOT"
 java.sourceCompatibility = VERSION_15
 java.targetCompatibility = VERSION_15
 
+sourceSets {
+    main {
+        java.srcDir("src/main/java")
+        resources.srcDir("src/main/resources")
+    }
+    test {
+        java.srcDir("src/test/java")
+        resources.srcDir("src/test/resources")
+    }
+}
+
 repositories {
     mavenCentral()
 }
