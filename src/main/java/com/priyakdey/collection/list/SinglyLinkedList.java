@@ -1,5 +1,8 @@
 package com.priyakdey.collection.list;
 
+import com.priyakdey.collection.exception.NoElementException;
+import com.sun.management.UnixOperatingSystemMXBean;
+
 import java.util.StringJoiner;
 
 /**
@@ -56,6 +59,63 @@ public class SinglyLinkedList<T> {
         }
 
         return joiner.toString();
+    }
+
+    /**
+     * Appends the element to the end of the list.
+     * If the list empty, the element becomes the head node.
+     *
+     * @param t - element to insert
+     */
+    public void append(T t) {
+        if (head == null) {
+            head = new Node<>(t);
+            size = 1;
+            return;
+        }
+        Node<T> node = head;
+        while (node.next != null) {
+            node = node.next;
+        }
+        node.next = new Node<>(t);
+        size++;
+    }
+
+    /**
+     * Removes the last element of from the list.
+     * In case of an empty list, it throws {@link NoElementException}.
+     *
+     * @return T - element that was popped
+     * @throws NoElementException in the event of list is empty
+     */
+    public T pop() {
+        if (size == 0) {
+            throw new NoElementException("List is empty.");
+        }
+        if (size == 1) {
+            T t = head.t;
+            head = null;
+            size = 0;
+            return t;
+        }
+        Node<T> node = head;
+        Node<T> penultimateNode = null;
+        while (node.next != null) {
+            penultimateNode = node;
+            node = node.next;
+        }
+        penultimateNode.next = null;
+        size--;
+        return node.t;
+    }
+
+    /**
+     * Returns if the list is empty or not
+     *
+     * @return boolean If the list is empty
+     */
+    public boolean isEmpty() {
+        return size == 0;
     }
 
     private static class Node<T> {
