@@ -1,8 +1,9 @@
 package com.priyakdey.collection.list;
 
 import com.priyakdey.collection.exception.NoElementException;
-import com.sun.management.UnixOperatingSystemMXBean;
 
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
@@ -68,6 +69,9 @@ public class SinglyLinkedList<T> {
      * @param t - element to insert
      */
     public void append(T t) {
+        if (t == null) {
+            throw new IllegalArgumentException("Null Value cannot be inserted.");
+        }
         if (head == null) {
             head = new Node<>(t);
             size = 1;
@@ -125,5 +129,114 @@ public class SinglyLinkedList<T> {
         private Node(T t) {
             this.t = t;
         }
+    }
+
+    /**
+     * Removes the first element in the list.
+     * Throws {@link NoElementException} if the list if empty
+     *
+     * @return T the evicted element
+     */
+    public T shift() {
+        if (size == 0) {
+            throw new NoElementException("The list is empty.");
+        }
+        Node<T> node = head;
+        head = head.next;
+        size--;
+        return node.t;
+    }
+
+    /**
+     * Adds the element to the head of the list and shifts rests of the element by 1 position
+     *
+     * @param t element to insert
+     */
+    public void unshift(T t) {
+        if (t == null) {
+            throw new IllegalArgumentException("Null Value cannot be inserted.");
+        }
+        if (size == 0) {
+            append(t);
+            return;
+        }
+        Node<T> node = head;
+        head = new Node<>(t);
+        head.next = node;
+        size++;
+    }
+
+    /**
+     * Returns the zero-based index of the first occurrence of the input argument
+     * In case the list is empty, it throws {@link NoElementException}.
+     * In case the element is not in the list it throws {@link NoSuchElementException}
+     *
+     * @param t element to find
+     * @return long index of the element
+     * @throws NoElementException     if the list is empty
+     * @throws NoSuchElementException if the element is not present in the list
+     */
+    public long indexOf(T t) {
+        if (t == null) {
+            throw new IllegalArgumentException("Null value is not supported.");
+        }
+        if (size == 0) {
+            throw new NoElementException("The list is empty.");
+        }
+        Node<T> node = head;
+        for (long i = 0; i < size; i++) {
+            if (Objects.equals(t, node.t)) {
+                return i;
+            }
+            node = node.next;
+        }
+        throw new NoSuchElementException("Element is not in the list.");
+    }
+
+    /**
+     * Returns the element at the requested position which is zero-based.
+     * In case the index is negative, {@link IllegalArgumentException} is thrown.
+     * In case the index is out of range of size, {@link IndexOutOfBoundsException} is thrown.
+     *
+     * @param index position
+     * @return T element at index position
+     * @throws IllegalArgumentException when index is negative
+     * @throws IndexOutOfBoundsException when index is out of range of the size of the list
+     */
+    public T get(long index) {
+        if (index < 0) {
+            throw new IllegalArgumentException("Index cannot be negative.");
+        }
+        if (index >= size) {
+            throw new IndexOutOfBoundsException("Index cannot be equal to or more than size(" + size + ") of the list");
+        }
+        Node<T> node = head;
+        for (long i = 0; i < index; i++) {
+            node = node.next;
+        }
+        return node.t;
+    }
+
+    public void insertAt(T t, long index) {
+        if (t == null || index < 0) {
+            throw new IllegalArgumentException("Illegal argument has been passed.");
+        }
+        if (index > size) {
+            throw new IndexOutOfBoundsException("Index cannot be equal to or more than size(" + size + ") of the list");
+        }
+        if (index == size) {
+            append(t);
+            return;
+        }
+        Node<T> prev = null;
+        Node<T> node = head;
+        for (long i = 0; i < index; i++) {
+            prev = node;
+            node = node.next;
+        }
+        Node<T> newNode = new Node<>(t);
+        prev.next = newNode;
+        newNode.next = node;
+        size++;
     }
 }
